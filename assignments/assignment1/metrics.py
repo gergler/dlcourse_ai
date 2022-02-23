@@ -1,37 +1,26 @@
+import numpy as np
+
 def binary_classification_metrics(prediction, ground_truth):
-    '''
-    Computes metrics for binary classification
-
-    Arguments:
-    prediction, np array of bool (num_samples) - model predictions
-    ground_truth, np array of bool (num_samples) - true labels
-
-    Returns:
-    precision, recall, f1, accuracy - classification metrics
-    '''
-    precision = 0
-    recall = 0
-    accuracy = 0
-    f1 = 0
-
-    # TODO: implement metrics!
-    # Some helpful links:
-    # https://en.wikipedia.org/wiki/Precision_and_recall
-    # https://en.wikipedia.org/wiki/F1_score
+    true_positive, false_positive, false_negative = 0, 0, 0
+    for i in zip(prediction, ground_truth):
+        if i == (1, 1):
+            true_positive += 1
+        elif i == (0, 1):   
+            false_negative += 1
+        elif i == (1, 0):
+            false_positive += 1
+    
+    precision = true_positive / (true_positive + false_positive)
+    recall = true_positive / (true_positive + false_negative)
+    f1 = 2 * precision * recall / (precision + recall)
+    
+    correct = np.where(prediction == ground_truth)[0]
+    accuracy = correct.shape[0]/prediction.shape[0]
     
     return precision, recall, f1, accuracy
 
 
 def multiclass_accuracy(prediction, ground_truth):
-    '''
-    Computes metrics for multiclass classification
-
-    Arguments:
-    prediction, np array of int (num_samples) - model predictions
-    ground_truth, np array of int (num_samples) - true labels
-
-    Returns:
-    accuracy - ratio of accurate predictions to total samples
-    '''
-    # TODO: Implement computing accuracy
-    return 0
+    correct = np.where(prediction == ground_truth)[0]
+    accuracy = correct.shape[0]/prediction.shape[0]
+    return accuracy
