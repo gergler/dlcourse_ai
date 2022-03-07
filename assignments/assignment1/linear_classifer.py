@@ -4,10 +4,10 @@ import numpy as np
 def softmax(predictions):
     copy_predictions = np.copy(predictions)
     if predictions.ndim == 1:
-        copy_predictions -= np.max(predictions) # numerical stbility
+        copy_predictions -= np.max(predictions) # numerical stability
         probs = np.exp(copy_predictions)/np.sum(np.exp(copy_predictions))
     else: 
-        copy_predictions -= np.amax(predictions, axis=1, keepdims=True) # numerical stbility
+        copy_predictions -= np.amax(predictions, axis=1, keepdims=True) # numerical stability
         probs = np.exp(copy_predictions)/np.sum(np.exp(copy_predictions), axis=1, keepdims=True)
         
     return probs
@@ -15,7 +15,7 @@ def softmax(predictions):
 
 def cross_entropy_loss(probs, target_index):
     if probs.ndim == 1:
-        loss = - np.log(probs[target_index])
+        loss = -np.log(probs[target_index])
     else:
         batch_size = probs.shape[0]
         batch_loss = -np.log(probs[np.arange(batch_size), target_index.flatten()]) # return a copy of the array collapsed into one dimension
@@ -71,8 +71,8 @@ class LinearSoftmaxClassifier():
             batches_indices = np.array_split(shuffled_indices, sections)
             
             for indices in batches_indices:
-                batch_X, batch_Y = X[indices], y[indices]
-                loss, dW = linear_softmax(batch_X, self.W, batch_Y)
+                batch_X, batch_y = X[indices], y[indices]
+                loss, dW = linear_softmax(batch_X, self.W, batch_y)
                 l2_loss, l2_dW = l2_regularization(self.W, reg)
                 
                 loss += l2_loss

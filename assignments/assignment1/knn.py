@@ -46,7 +46,7 @@ class KNN:
         num_train = self.train_X.shape[0]
         num_test = X.shape[0]
         dists = np.zeros((num_test, num_train), np.float32)
-        dists = np.sum(np.abs(X[:, None] - self.train_X[None, : ]), axis = 2) # broadcast, np.sum(3 axis, but it is a row)
+        dists = np.sum(np.abs(X[:, None] - self.train_X[None, : ]), axis = 2) # broadcast, Nx1 and 1xM => NxM, np.sum(3 axis, but it is a row)
         return dists
 
     def predict_labels_binary(self, dists):
