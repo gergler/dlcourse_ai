@@ -4,8 +4,6 @@ from layers import FullyConnectedLayer, ReLULayer, softmax_with_cross_entropy, l
 
 
 class TwoLayerNet:
-    """ Neural network with two fully connected layers """
-
     def __init__(self, n_input, n_output, hidden_layer_size, reg):
         """
         Initializes the neural network
@@ -16,57 +14,47 @@ class TwoLayerNet:
         hidden_layer_size, int - number of neurons in the hidden layer
         reg, float - L2 regularization strength
         """
+        self.fully_conect_layer_1 = FullyConnectedLayer(n_input, hidden_layer_size)
+        self.relu_layer = ReLULayer()
+        self.fully_conect_layer_2 = FullyConnectedLayer(hidden_layer_size, n_output) 
         self.reg = reg
-        # TODO Create necessary layers
-        raise Exception("Not implemented!")
 
     def compute_loss_and_gradients(self, X, y):
-        """
-        Computes total loss and updates parameter gradients
-        on a batch of training examples
+        for param in self.params().values():
+            param.grad = 0
+        
+        forward_layer_1 = self.fully_conect_layer_1.forward(X)
+        forward_relu_layer = self.relu_layer.forward(forward_layer_1)
+        forward_layer_2 = self.fully_conect_layer_2.forward(forward_relu_layer)
+        
+        loss, grad = softmax_with_cross_entropy(forward_layer_2, y)
+        
+        backward_layer_2 = self.fully_conect_layer_2.backward(grad)
+        backward_relu_layer = self.relu_layer.backward(backward_layer_2)
+        backward_layer_1 = self.fully_conect_layer_1.backward(backward_relu_layer)
 
-        Arguments:
-        X, np array (batch_size, input_features) - input data
-        y, np array of int (batch_size) - classes
-        """
-        # Before running forward and backward pass through the model,
-        # clear parameter gradients aggregated from the previous pass
-        # TODO Set parameter gradient to zeros
-        # Hint: using self.params() might be useful!
-        raise Exception("Not implemented!")
-        
-        # TODO Compute loss and fill param gradients
-        # by running forward and backward passes through the model
-        
-        # After that, implement l2 regularization on all params
-        # Hint: self.params() is useful again!
-        raise Exception("Not implemented!")
+        for param in self.params().values():
+            reg_loss, reg_grad = l2_regularization(param.value, self.reg) 
+            loss += reg_loss
+            param.grad += reg_grad
 
         return loss
 
     def predict(self, X):
-        """
-        Produces classifier predictions on the set
-
-        Arguments:
-          X, np array (test_samples, num_features)
-
-        Returns:
-          y_pred, np.array of int (test_samples)
-        """
-        # TODO: Implement predict
-        # Hint: some of the code of the compute_loss_and_gradients
-        # can be reused
         pred = np.zeros(X.shape[0], np.int)
+        
+        forward_layer_1 = self.fully_conect_layer_1.forward(X)
+        forward_relu_layer = self.relu_layer.forward(forward_layer_1)
+        forward_layer_2 = self.fully_conect_layer_2.forward(forward_relu_layer)
+        
+        pred = np.argmax(forward_layer_2, axis=1)
 
-        raise Exception("Not implemented!")
         return pred
 
     def params(self):
-        result = {}
-
-        # TODO Implement aggregating all of the params
-
-        raise Exception("Not implemented!")
+        result = {'W1': self.fully_conect_layer_1.params()['W'], 
+                  'B1': self.fully_conect_layer_1.params()['B'], 
+                  'W2': self.fully_conect_layer_2.params()['W'], 
+                  'B2': self.fully_conect_layer_2.params()['B']}
 
         return result
