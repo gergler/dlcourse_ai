@@ -1,13 +1,7 @@
-def binary_classification_metrics(prediction, ground_truth):
-    precision = 0
-    recall = 0
-    accuracy = 0
-    f1 = 0
-
-    # TODO: implement metrics!
-    
-    return accuracy, precision, recall, f1
-
+import numpy as np
 
 def multiclass_accuracy(prediction, ground_truth):
-    return 0
+    correct = np.where(prediction == ground_truth)[0]
+    accuracy = correct.shape[0]/prediction.shape[0]
+    
+    return accuracy
