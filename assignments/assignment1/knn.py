@@ -53,7 +53,7 @@ class KNN:
         num_test = dists.shape[0]
         pred = np.zeros(num_test, np.bool)
         for i in range(num_test):
-            min_dists = np.argpartition(dists[i], 1) # return array of indexes, k-th element for sorting
+            min_dists = np.argpartition(dists[i], self.k) # return array of indexes, k-th element for sorting
             k_nearest_neighbours = self.train_y[min_dists[:self.k]]
             unique_neighbours, counts = np.unique(k_nearest_neighbours, return_counts=True)
             pred[i] = unique_neighbours[np.argmax(counts)]
@@ -63,7 +63,7 @@ class KNN:
         num_test = dists.shape[0]
         pred = np.zeros(num_test, np.int)
         for i in range(num_test):
-            min_dists = np.argpartition(dists[i], 1) # return array of indexes, k-th element for sorting
+            min_dists = np.argpartition(dists[i], self.k) # return array of indexes, k-th element for sorting
             k_nearest_neighbours = self.train_y[min_dists[:self.k]]
             unique_neighbours, counts = np.unique(k_nearest_neighbours, return_counts=True)
             pred[i] = unique_neighbours[np.argmax(counts)]
